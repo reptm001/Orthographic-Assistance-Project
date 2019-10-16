@@ -1,0 +1,396 @@
+object frmAdduser: TfrmAdduser
+  Left = 0
+  Top = 0
+  Caption = 'Add User'
+  ClientHeight = 299
+  ClientWidth = 635
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object imgBack: TImage
+    Left = 8
+    Top = 8
+    Width = 32
+    Height = 32
+    Cursor = crHandPoint
+    Picture.Data = {
+      0954506E67496D61676589504E470D0A1A0A0000000D49484452000000200000
+      00200806000000737A7AF400000006624B474400FF00FF00FFA0BDA793000001
+      2B4944415478DAED96CD0A824010C7DDEE3D53F41AEA49B23A15D2A132BB9575
+      88EA58509EFCC087EA013A7715EDBFE561FB54C85D091C901910F9FF66677646
+      22956CA402A800FE1240D3B4BAE3389752006459B60821DD288A1A61189E8402
+      40BC07F12D8D9324D17DDF3F0A035055D584E81C610C888EEBBA875FC5730328
+      8A3286B3A93820DA45649E1B00E223B8050FF14C00D47C88E35E52713CBAE779
+      4E91E25F0150F33E32DE204C78897F0460BA9DABF85B0064DE42E67B84351E82
+      48E641F305004D37805BF1CA38132085D0E1F6E97B131F2D78017D6C42160236
+      C1E0B185028882C83388D8725828C75C280003B193EE37A35088DCCB8885C035
+      9D6224CF840250C38032D00B6BE9B68D05AFE3A79330E2386E064170160E40AD
+      D45FB2A2AD02A8004A07B80214728521C6C82E940000000049454E44AE426082}
+    OnClick = imgBackClick
+  end
+  object lblAddUser: TLabel
+    Left = 56
+    Top = 12
+    Width = 86
+    Height = 23
+    Caption = 'Add User'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object lblBack: TLabel
+    Left = 13
+    Top = 40
+    Width = 22
+    Height = 13
+    Caption = 'Back'
+  end
+  object shpProfilePic: TShape
+    Left = 320
+    Top = 72
+    Width = 65
+    Height = 65
+    Shape = stCircle
+  end
+  object lblProfilePic: TLabel
+    Left = 320
+    Top = 53
+    Width = 66
+    Height = 13
+    Caption = 'Profile Picture'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object imgProfilePic: TImage
+    Left = 337
+    Top = 89
+    Width = 32
+    Height = 32
+  end
+  object pnlAddUserForm: TPanel
+    Left = 56
+    Top = 50
+    Width = 225
+    Height = 235
+    TabOrder = 0
+    object lblEmail: TLabel
+      Left = 92
+      Top = 149
+      Width = 10
+      Height = 16
+      Caption = '@'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object lblUsernameError: TLabel
+      Left = 24
+      Top = 50
+      Width = 185
+      Height = 10
+      Caption = 'Enter valid username (between 6 and 15 characters)'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -8
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      Visible = False
+    end
+    object lblPasswordError: TLabel
+      Left = 24
+      Top = 130
+      Width = 184
+      Height = 10
+      Caption = 'Enter valid password (between 6 and 15 characters)'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -8
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      Visible = False
+    end
+    object lblForenameError: TLabel
+      Left = 24
+      Top = 90
+      Width = 165
+      Height = 10
+      Caption = 'Enter valid forename (less than 20 characters)'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -8
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      Visible = False
+    end
+    object lblEmailError: TLabel
+      Left = 24
+      Top = 170
+      Width = 170
+      Height = 10
+      Caption = 'Enter valid email (less than 30 total characters)'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -8
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      Visible = False
+    end
+    object lblManFieldUsername: TLabel
+      Left = 2
+      Top = 34
+      Width = 8
+      Height = 16
+      Caption = '*'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object lblManFieldPassword: TLabel
+      Left = 2
+      Top = 111
+      Width = 8
+      Height = 16
+      Caption = '*'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object lblManFieldEmail: TLabel
+      Left = 2
+      Top = 143
+      Width = 8
+      Height = 16
+      Caption = '*'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object lblManFieldStar: TLabel
+      Left = 2
+      Top = 217
+      Width = 8
+      Height = 16
+      Caption = '*'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object lblManField: TLabel
+      Left = 16
+      Top = 216
+      Width = 77
+      Height = 13
+      Caption = 'Mandatory Field'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+    end
+    object lblGenSettings: TLabel
+      Left = 8
+      Top = 3
+      Width = 79
+      Height = 13
+      Caption = 'General Settings'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clGray
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+    end
+    object edtUsername: TEdit
+      Left = 16
+      Top = 28
+      Width = 193
+      Height = 21
+      TabOrder = 0
+      TextHint = 'Username'
+    end
+    object edtForename: TEdit
+      Left = 16
+      Top = 68
+      Width = 193
+      Height = 21
+      TabOrder = 1
+      TextHint = 'Forename'
+    end
+    object edtPassword: TEdit
+      Left = 16
+      Top = 108
+      Width = 193
+      Height = 21
+      TabOrder = 2
+      TextHint = 'Password'
+    end
+    object edtEmailPre: TEdit
+      Left = 16
+      Top = 148
+      Width = 73
+      Height = 21
+      TabOrder = 3
+      TextHint = 'Email'
+    end
+    object ckbxAdmin: TCheckBox
+      Left = 16
+      Top = 188
+      Width = 121
+      Height = 17
+      Caption = 'Administrator Rights'
+      TabOrder = 4
+    end
+    object cbEmail: TComboBox
+      Left = 159
+      Top = 148
+      Width = 58
+      Height = 21
+      TabOrder = 5
+    end
+    object edtEmailSuf: TEdit
+      Left = 106
+      Top = 148
+      Width = 54
+      Height = 21
+      TabOrder = 6
+    end
+  end
+  object btnProfilePicRight: TButton
+    Left = 352
+    Top = 143
+    Width = 49
+    Height = 25
+    Caption = '--->'
+    TabOrder = 1
+  end
+  object btnProfilePicLeft: TButton
+    Left = 304
+    Top = 143
+    Width = 49
+    Height = 25
+    Caption = '<---'
+    TabOrder = 2
+  end
+  object btnAddUser: TButton
+    Left = 520
+    Top = 254
+    Width = 75
+    Height = 25
+    Caption = 'Add User'
+    TabOrder = 3
+    OnClick = btnAddUserClick
+  end
+  object pnlAdvancedForm: TPanel
+    Left = 423
+    Top = 50
+    Width = 194
+    Height = 175
+    TabOrder = 4
+    object lblAdvSettings: TLabel
+      Left = 8
+      Top = 3
+      Width = 90
+      Height = 13
+      Caption = 'Advanced Settings'
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clGray
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentColor = False
+      ParentFont = False
+    end
+    object lblAdvNotice: TLabel
+      Left = 8
+      Top = 20
+      Width = 123
+      Height = 11
+      Caption = 'Leave blank unless authorized'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -9
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label1: TLabel
+      Left = 24
+      Top = 67
+      Width = 36
+      Height = 10
+      Caption = 'Last Login'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -8
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+    end
+    object dtpLastLogin: TDateTimePicker
+      Left = 16
+      Top = 45
+      Width = 146
+      Height = 21
+      Date = 43450.000000000000000000
+      Time = 0.888682673612493100
+      TabOrder = 0
+    end
+    object edtScore: TEdit
+      Left = 16
+      Top = 85
+      Width = 121
+      Height = 21
+      TabOrder = 1
+      TextHint = 'Score'
+    end
+    object edtDailyStreak: TEdit
+      Left = 16
+      Top = 125
+      Width = 121
+      Height = 21
+      TabOrder = 2
+      TextHint = 'Daily Streak'
+    end
+  end
+  object adotblUsers: TADOTable
+    Left = 600
+    Top = 8
+  end
+end

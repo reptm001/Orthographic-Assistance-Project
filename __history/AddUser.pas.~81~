@@ -1,0 +1,248 @@
+unit AddUser;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Data.Win.ADODB, Data.DB,
+  Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, Vcl.Imaging.pngimage, Vcl.ComCtrls;
+
+type
+  TfrmAdduser = class(TForm)
+    imgBack: TImage;
+    adotblUsers: TADOTable;
+    pnlAddUserForm: TPanel;
+    edtUsername: TEdit;
+    edtPassword: TEdit;
+    edtForename: TEdit;
+    edtEmailPre: TEdit;
+    ckbxAdmin: TCheckBox;
+    cbEmail: TComboBox;
+    lblEmail: TLabel;
+    btnAddUser: TButton;
+    edtEmailSuf: TEdit;
+    lblAddUser: TLabel;
+    lblBack: TLabel;
+    lblUsernameError: TLabel;
+    lblPasswordError: TLabel;
+    lblForenameError: TLabel;
+    lblEmailError: TLabel;
+    lblManFieldUsername: TLabel;
+    lblManFieldPassword: TLabel;
+    lblManFieldEmail: TLabel;
+    lblManFieldStar: TLabel;
+    lblManField: TLabel;
+    shpProfilePic: TShape;
+    btnProfilePicRight: TButton;
+    btnProfilePicLeft: TButton;
+    lblProfilePic: TLabel;
+    pnlAdvancedForm: TPanel;
+    dtpLastLogin: TDateTimePicker;
+    edtScore: TEdit;
+    edtDailyStreak: TEdit;
+    lblAdvSettings: TLabel;
+    lblAdvNotice: TLabel;
+    lblGenSettings: TLabel;
+    Label1: TLabel;
+    imgProfilePic: TImage;
+    imgViewPassword: TImage;
+    pnlProfilePicForm: TPanel;
+    pnlDBDetails: TPanel;
+    lblDBDetails: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
+    procedure imgBackClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure btnAddUserClick(Sender: TObject);
+    procedure btnProfilePicRightClick(Sender: TObject);
+    procedure btnProfilePicLeftClick(Sender: TObject);
+    procedure imgViewPasswordMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure imgViewPasswordMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure ClearForms();
+
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmAdduser: TfrmAdduser;
+  CurrentPic: Integer;
+  CurrentDir: string;
+  ImageDir: string;
+
+implementation
+
+{$R *.dfm}
+
+uses
+  AdminOptions, GlobalSetup, Error;
+
+procedure TfrmAdduser.ClearForms();
+begin
+  edtUsername.Text := '';
+  lblUsernameError.Visible := false;
+  edtForename.Text := '';
+  lblForenameError.Visible := false;
+  edtPassword.Text := '';
+  lblPasswordError.Visible := false;
+  edtEmailPre.Text := '';
+  edtEmailSuf.Text := '';
+  cbEmail.ItemIndex := -1;
+  lblEmailError.Visible := false;
+  ckbxAdmin.State := cbUnchecked;
+  dtpLastLogin.Date := Date;
+  edtScore.Text := '';
+  edtDailyStreak.Text := '';
+end;
+
+procedure TfrmAdduser.btnAddUserClick(Sender: TObject);
+var
+  i, lastID: Integer;
+  domain: string;
+  Error: boolean;
+begin
+  Error := false;
+  if (edtUsername.Text = '') or (Length(edtUsername.Text) < 6) or
+    (Length(edtUsername.Text) > 15) then
+  begin
+    lblUsernameError.Visible := true;
+    edtUsername.SetFocus;
+    Error := true;
+  end
+  else
+    lblUsernameError.Visible := false;
+  if (Length(edtForename.Text) > 20) then
+  begin
+    lblForenameError.Visible := true;
+    edtForename.SetFocus;
+    Error := true;
+  end
+  else
+    lblForenameError.Visible := false;
+  if (edtPassword.Text = '') or (Length(edtPassword.Text) < 6) or
+    (Length(edtPassword.Text) > 15) then
+  begin
+    lblPasswordError.Visible := true;
+    edtPassword.SetFocus;
+    Error := true;
+  end
+  else
+    lblPasswordError.Visible := false;
+  if (edtEmailPre.Text = '') or (edtEmailSuf.Text = '') or
+    (cbEmail.ItemIndex = -1) or
+    ((Length(edtEmailPre.Text) + Length(edtEmailSuf.Text) + 6) > 30) then
+  begin
+    lblEmailError.Visible := true;
+    edtEmailPre.SetFocus;
+    Error := true;
+  end
+  else
+    lblEmailError.Visible := false;
+  if not Error then
+  begin
+    adotblUsers.First;
+    repeat
+      if uppercase(adotblUsers['Username']) = uppercase(edtUsername.Text) then
+        Error := true;
+      adotblUsers.Next;
+    until adotblUsers.Eof or Error;
+    if not Error then
+    begin
+      adotblUsers.Open;
+      adotblUsers.Append;
+      adotblUsers['Username'] := edtUsername.Text;
+      adotblUsers['Password]'] := edtPassword.Text;
+      adotblUsers['Forename'] := edtForename.Text;
+      adotblUsers['LastLogin'] := dtpLastLogin.Date;
+      if Length(edtScore.Text) > 0 then
+
+        adotblUsers['Score'] :=;
+      adotblUsers['DailyStreak'] :=;
+      adotblUsers['ProfilePicture'] :=;
+      adotblUsers['AdminRights'] :=;
+      adotblUsers['EMail'] :=;
+      adotblUsers['LevelID'] :=;
+      adotblUsers.Post;
+      adotblUsers.Refresh;
+      ClearForms;
+    end
+    else
+    begin
+      setglobalerrorcode('addusernametakenerror.txt');
+      errorForm.Show;
+    end;
+  end
+end;
+
+procedure TfrmAdduser.btnProfilePicLeftClick(Sender: TObject);
+begin
+  if CurrentPic = 1 then
+    CurrentPic := 14
+  else
+    Dec(CurrentPic);
+  imgProfilePic.Picture.LoadFromFile(ImageDir + inttostr(CurrentPic) + '.png');
+end;
+
+procedure TfrmAdduser.btnProfilePicRightClick(Sender: TObject);
+begin
+  if CurrentPic = 14 then
+    CurrentPic := 1
+  else
+    Inc(CurrentPic);
+  imgProfilePic.Picture.LoadFromFile(ImageDir + inttostr(CurrentPic) + '.png');
+end;
+
+procedure TfrmAdduser.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  frmAdminoptions.Show;
+end;
+
+procedure TfrmAdduser.FormCreate(Sender: TObject);
+begin
+  frmAdduser.Position := poscreencenter;
+end;
+
+procedure TfrmAdduser.FormShow(Sender: TObject);
+var
+  i: Integer;
+begin
+  ClearForms;
+  edtScore.NumbersOnly := true;
+  edtDailyStreak.NumbersOnly := true;
+  adotblUsers.Active := false;
+  adotblUsers.ConnectionString := globalconnectionstring;
+  adotblUsers.TableName := 'tblUsers';
+  adotblUsers.Active := true;
+  CurrentDir := GetCurrentDir;
+  ImageDir := StringReplace(CurrentDir, 'Win' + (inttostr(SizeOf(Pointer) * 8))
+    + '\Debug', 'Profile Pictures\', [rfIgnoreCase]);
+  CurrentPic := 1;
+  imgProfilePic.Picture.LoadFromFile(ImageDir + inttostr(CurrentPic) + '.png');
+end;
+
+procedure TfrmAdduser.imgViewPasswordMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  edtPassword.PasswordChar := #0;
+end;
+
+procedure TfrmAdduser.imgViewPasswordMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  edtPassword.PasswordChar := '*';
+end;
+
+procedure TfrmAdduser.imgBackClick(Sender: TObject);
+begin
+  frmAdminoptions.Show;
+  frmAdduser.Hide;
+end;
+
+end.
