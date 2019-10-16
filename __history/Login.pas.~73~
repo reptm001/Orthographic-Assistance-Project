@@ -1,0 +1,166 @@
+unit Login;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Mask, Vcl.ExtCtrls,
+  Data.DB, Data.Win.ADODB, Vcl.Imaging.pngimage, Vcl.Buttons, Vcl.OleServer,
+  SpeechLib_TLB;
+
+type
+  TfrmLogin = class(TForm)
+    edtUsername: TEdit;
+    edtPassword: TMaskEdit;
+    adotblUsers: TADOTable;
+    imgLogin: TImage;
+    lblLogin: TLabel;
+    imgExit: TImage;
+    lblExit: TLabel;
+    lblLoginBtn: TLabel;
+    pnlLogin: TPanel;
+    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure edtPasswordKeyPress(Sender: TObject; var Key: Char);
+    procedure imgLoginClick(Sender: TObject);
+    procedure imgExitClick(Sender: TObject);
+    procedure edtUsernameKeyPress(Sender: TObject; var Key: Char);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmLogin: TfrmLogin;
+
+implementation
+
+{$R *.dfm}
+
+uses
+  Globalsetup, Mainmenu, Error;
+
+procedure TfrmLogin.FormCreate(Sender: TObject);
+var
+  DatabaseName: textfile;
+  text: string;
+  dlg: Topendialog;
+  filename: string;
+  connection: string;
+  connectstring: string;
+  password: string;
+
+begin
+  frmLogin.Position := poscreencenter;
+  assignfile(DatabaseName, 'filelocation.txt');
+  reset(DatabaseName);
+  readln(DatabaseName, text);
+  closefile(DatabaseName);
+  try
+    if fileexists(text) then
+      connection := text
+    else
+    begin
+      dlg := Topendialog.Create(nil);
+      try
+        if dlg.Execute() then
+        begin
+          filename := dlg.filename;
+          showmessage(filename);
+          connection := (filename);
+          rewrite(DatabaseName);
+          writeln(DatabaseName, connection);
+          closefile(DatabaseName);
+        end
+        else
+          showmessage('No file has been selected.')
+      finally
+        dlg.Free();
+      end;
+    end;
+  finally
+  end;
+  InputQuery('Admin: Database Password', 'Enter the password for the database:',
+    password);
+  connectstring := 'provider=microsoft.ace.oledb.16.0;data source =' +
+    connection + ';Jet OLEDB:Database Password=' + password + ';';
+  setconnectionstring(connectstring);
+  adotblUsers.Active := false;
+  adotblUsers.ConnectionString := connectstring;
+  adotblUsers.TableName := 'tblUsers';
+end;
+
+procedure TfrmLogin.FormShow(Sender: TObject);
+begin
+  edtUsername.text := '';
+  edtPassword.text := '';
+  edtUsername.SetFocus;
+  try
+    adotblUsers.Active := true;
+  except
+    setglobalerrorcode('dbpassworderror.txt');
+    frmError.Show;
+  end;
+end;
+
+procedure TfrmLogin.imgExitClick(Sender: TObject);
+begin
+  Application.Terminate();
+  Exit;
+end;
+
+procedure TfrmLogin.imgLoginClick(Sender: TObject);
+begin
+  if (length(edtUsername.text) = 0) or (length(edtPassword.text) = 0) then
+  begin
+    setglobalerrorcode('loginblankerror.txt');
+    frmError.Show;
+  end
+  else
+  begin
+    if not adotblUsers.Locate('Username', edtUsername.text, []) then
+    begin
+      setglobalerrorcode('loginerror.txt');
+      frmError.Show;
+    end
+    else if edtPassword.text = adotblUsers['Password'] then
+    begin
+      setglobalpasslevel(adotblUsers['AdminRights']);
+      setglobalusername(edtUsername.text);
+      adotblUsers.Locate('Username', edtUsername.text, []);
+      adotblUsers.Edit;
+      adotblUsers.FieldByName('LastLogin').AsDateTime := date;
+      adotblUsers.Post;
+      adotblUsers.Refresh;
+      frmMainmenu.Show;
+      frmLogin.Hide;
+    end
+    else
+    begin
+      setglobalerrorcode('loginerror.txt');
+      frmError.Show;
+    end;
+  end;
+end;
+
+procedure TfrmLogin.edtPasswordKeyPress(Sender: TObject; var Key: Char);
+begin
+  if ord(Key) = VK_RETURN then
+  begin
+    Key := #0; // prevent beeping
+    imgLoginClick(Sender);
+  end;
+end;
+
+procedure TfrmLogin.edtUsernameKeyPress(Sender: TObject; var Key: Char);
+begin
+  if ord(Key) = VK_RETURN then
+  begin
+    Key := #0; // prevent beeping
+    edtPassword.SetFocus;
+  end;
+end;
+
+end.

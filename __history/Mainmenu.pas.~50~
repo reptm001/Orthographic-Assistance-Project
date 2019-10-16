@@ -1,0 +1,136 @@
+unit Mainmenu;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls,
+  Vcl.StdCtrls, Data.DB, Data.Win.ADODB;
+
+type
+  TfrmMainmenu = class(TForm)
+    imgAdminOptions: TImage;
+    imgSettings: TImage;
+    imgLogout: TImage;
+    lblMainMenu: TLabel;
+    lblLogout: TLabel;
+    lblAdminOptions: TLabel;
+    lblSettings: TLabel;
+    shpProfilePic: TShape;
+    imgProfilePic: TImage;
+    lblUsername: TLabel;
+    adotblUsers: TADOTable;
+    adoqryUsers: TADOQuery;
+    lblScore: TLabel;
+    lblDailyStreak: TLabel;
+    lblLastLogin: TLabel;
+    timerClock: TTimer;
+    lblTime: TLabel;
+    lblDate: TLabel;
+    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure imgAdminOptionsClick(Sender: TObject);
+    procedure imgLogoutClick(Sender: TObject);
+    procedure imgSettingsClick(Sender: TObject);
+    procedure timerClockTimer(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmMainmenu: TfrmMainmenu;
+  CurrentDir: string;
+  ImageDir: string;
+
+implementation
+
+{$R *.dfm}
+
+uses
+  Login, Globalsetup, AdminOptions, Settings, Error;
+
+procedure TfrmMainmenu.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  frmLogin.Show;
+end;
+
+procedure TfrmMainmenu.FormCreate(Sender: TObject);
+begin
+  frmMainmenu.Scaled := true;
+  frmMainmenu.Position := poscreencenter;
+  // WindowState := wsMaximized;
+  adotblUsers.Active := false;
+  adotblUsers.ConnectionString := globalconnectionstring;
+  adotblUsers.TableName := 'tblUsers';
+end;
+
+procedure TfrmMainmenu.FormShow(Sender: TObject);
+begin
+  case globalpasslevel of
+    0:
+      begin
+        frmMainmenu.Caption := 'Regular User Menu';
+        imgAdminOptions.Visible := false;
+        lblAdminOptions.Visible := false;
+      end;
+    1:
+      begin
+        frmMainmenu.Caption := 'Administrator Menu';
+        imgAdminOptions.Visible := true;
+        lblAdminOptions.Visible := true;
+      end;
+  end;
+  try
+    adotblUsers.Active := true;
+  except
+    setglobalerrorcode('dbpassworderror.txt');
+    errorForm.Show;
+  end;
+  with adoqryUsers do
+  begin
+  Active := false;
+  ConnectionString := globalconnectionstring;
+  SQL.Clear;
+  SQL.Add('Select * from tblUsers where Username = "'+globalusername+'";');
+  Active := true;
+  First;
+  CurrentDir := GetCurrentDir;
+  ImageDir := StringReplace(CurrentDir, 'Win64\Debug', 'Profile Pictures\',
+    [rfIgnoreCase]);
+  imgProfilePic.Picture.LoadFromFile(ImageDir + adoqryUsers['ProfilePicture']);
+  lblScore.Caption := 'Score: ' + floattostr(adoqryUsers['Score']);
+  lblDailyStreak.Caption := 'Daily Streak: ' + floattostr(adoqryUsers['DailyStreak']);
+  lblLastLogin.Caption := 'Last Login: ' + datetostr(adoqryUsers['LastLogin']);
+  end;
+  lblUsername.Caption := globalusername;
+end;
+
+procedure TfrmMainmenu.imgAdminOptionsClick(Sender: TObject);
+begin
+  frmAdminoptions.Show;
+  frmMainmenu.Hide;
+end;
+
+procedure TfrmMainmenu.imgLogoutClick(Sender: TObject);
+begin
+  frmLogin.Show;
+  frmMainmenu.Hide;
+end;
+
+procedure TfrmMainmenu.imgSettingsClick(Sender: TObject);
+begin
+  frmSettings.Show;
+  frmMainmenu.Hide;
+end;
+
+procedure TfrmMainmenu.timerClockTimer(Sender: TObject);
+begin
+  lblTime.Caption := timetostr(Time);
+  lblDate.Caption := datetostr(Date);
+end;
+
+end.

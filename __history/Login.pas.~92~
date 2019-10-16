@@ -1,0 +1,192 @@
+unit Login;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Mask, Vcl.ExtCtrls,
+  Data.DB, Data.Win.ADODB, Vcl.Imaging.pngimage, Vcl.Buttons, Vcl.OleServer,
+  SpeechLib_TLB, DateUtils;
+
+type
+  TfrmLogin = class(TForm)
+    edtUsername: TEdit;
+    edtPassword: TMaskEdit;
+    adotblUsers: TADOTable;
+    imgLogin: TImage;
+    lblLogin: TLabel;
+    imgExit: TImage;
+    lblExit: TLabel;
+    lblLoginBtn: TLabel;
+    pnlLogin: TPanel;
+    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure edtPasswordKeyPress(Sender: TObject; var Key: Char);
+    procedure imgLoginClick(Sender: TObject);
+    procedure imgExitClick(Sender: TObject);
+    procedure edtUsernameKeyPress(Sender: TObject; var Key: Char);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmLogin: TfrmLogin;
+
+implementation
+
+{$R *.dfm}
+
+uses
+  Globalsetup, Mainmenu, Error;
+
+procedure TfrmLogin.FormCreate(Sender: TObject);
+var
+  DatabaseName: textfile;
+  text: string;
+  dlg: Topendialog;
+  filename: string;
+  connection: string;
+  connectstring: string;
+  password: string;
+
+begin
+  frmLogin.Position := poscreencenter;
+  // Open filelocation.txt and store the database location contained within it
+  assignfile(DatabaseName, 'filelocation.txt');
+  reset(DatabaseName);
+  readln(DatabaseName, text);
+  closefile(DatabaseName);
+  // If the file is a database and exists then add the location to the connection string
+  if (fileexists(text) and (extractfileext(text)='.accdb')) then
+    connection := text
+  else
+  // If the database doesnt exist then create open dialog to allow user to choose location
+  begin
+    dlg := Topendialog.Create(nil);
+    try
+      if dlg.Execute() then
+      begin
+        filename := dlg.filename;
+        showmessage(filename);
+        connection := (filename);
+        // Rewrite filelocation.txt to store the new database location
+        rewrite(DatabaseName);
+        writeln(DatabaseName, connection);
+        closefile(DatabaseName);
+      end
+      else
+      // If the user closes the dialog box then inform them that no selection has been made
+        showmessage('No file has been selected.')
+    finally
+      dlg.Free();
+    end;
+  end;
+  // Create input dialog to enter database password and append the connection string
+  InputQuery('Admin: Database Password', 'Enter the password for the database:',
+    password);
+  setglobaldbpassword(password);
+  // Create connection string. This will currently only work for .accdb files
+  connectstring := 'provider=microsoft.ace.oledb.16.0;data source =' +
+    connection + ';Jet OLEDB:Database Password=' + password + ';';
+  // Run procedure in Globalsetup unit to save global connection string
+  // This can then be used by other forms/units
+  setconnectionstring(connectstring);
+  adotblUsers.Active := false;
+  adotblUsers.ConnectionString := connectstring;
+  adotblUsers.TableName := 'tblUsers';
+end;
+
+procedure TfrmLogin.FormShow(Sender: TObject);
+begin
+  // When form is loaded reset input boxes
+  edtUsername.text := '';
+  edtPassword.text := '';
+  edtUsername.SetFocus;
+  // Attempt to connect to database ..
+  try
+    adotblUsers.Active := true;
+  // If this raises an error (eg doesnt exist) then show custom error dialog
+  except
+    setglobalerrorcode('dbpassworderror.txt');
+    frmError.Show;
+    frmLogin.Close;
+  end;
+end;
+
+procedure TfrmLogin.imgExitClick(Sender: TObject);
+begin
+  Application.Terminate();
+  Exit;
+end;
+
+procedure TfrmLogin.imgLoginClick(Sender: TObject);
+var
+  DailyStreak: integer;
+begin
+  // If inputs are blank then show custom error dialog
+  if (length(edtUsername.text) = 0) or (length(edtPassword.text) = 0) then
+  begin
+    setglobalerrorcode('loginblankerror.txt');
+    frmError.Show;
+  end
+  else
+  begin
+    // If inputted username doesnt exist in the database then show custom error dialog
+    if not adotblUsers.Locate('Username', edtUsername.text, []) then
+    begin
+      setglobalerrorcode('loginerror.txt');
+      frmError.Show;
+    end
+    else if edtPassword.text = adotblUsers['Password'] then
+    begin
+      // Set admin rights and username in the Globalsetup unit
+      setglobalpasslevel(adotblUsers['AdminRights']);
+      setglobalusername(edtUsername.text);
+      adotblUsers.Locate('Username', edtUsername.text, []);
+      // Get daily streak from database and increment if last login was yesterday, otherwise reset
+      DailyStreak := adotblUsers.FieldByName('DailyStreak').AsInteger;
+      if adotblUsers.FieldByName('LastLogin').AsDateTime = Yesterday then
+        inc(DailyStreak)
+      else if adotblUsers.FieldByName('LastLogin').AsDateTime <> date then
+        DailyStreak := 0;
+      // Post amendments to the database and refresh
+      adotblUsers.Edit;
+      adotblUsers.FieldByName('DailyStreak').AsInteger := DailyStreak;
+      adotblUsers.FieldByName('LastLogin').AsDateTime := date;
+      adotblUsers.Post;
+      adotblUsers.Refresh;
+      frmMainmenu.Show;
+      frmLogin.Hide;
+    end
+    else
+    // If inputted password is incoorrect then show custom error dialog
+    begin
+      setglobalerrorcode('loginerror.txt');
+      frmError.Show;
+    end;
+  end;
+end;
+
+procedure TfrmLogin.edtPasswordKeyPress(Sender: TObject; var Key: Char);
+begin
+  if ord(Key) = VK_RETURN then
+  begin
+    Key := #0; // prevent beeping
+    imgLoginClick(Sender);
+  end;
+end;
+
+procedure TfrmLogin.edtUsernameKeyPress(Sender: TObject; var Key: Char);
+begin
+  // If the user presses the return key then move focus to next input (tab)
+  if ord(Key) = VK_RETURN then
+  begin
+    Key := #0; // prevent beeping
+    edtPassword.SetFocus;
+  end;
+end;
+
+end.
