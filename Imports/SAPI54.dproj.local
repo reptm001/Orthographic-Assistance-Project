@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <Transactions>
+    <Transaction>2019/01/15 11:24:36.740,=rtl.dcp</Transaction>
+    <Transaction>2019/01/15 11:24:42.007,=N:\Computing Programming Project\Project Code\Imports\SpeechLib_TLB.pas</Transaction>
+    <Transaction>2019/01/15 11:24:42.012,=designide.dcp</Transaction>
+    <Transaction>2019/01/15 11:24:42.016,=vcl.dcp</Transaction>
+    <Transaction>2019/01/15 11:24:42.021,=vclactnband.dcp</Transaction>
+    <Transaction>2019/01/15 11:24:42.027,=vclx.dcp</Transaction>
+    <Transaction>2019/01/15 11:24:42.032,=xmlrtl.dcp</Transaction>
+  </Transactions>
+</BorlandProject>

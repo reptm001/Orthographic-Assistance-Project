@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2018/11/20 11:24:58.000.175,=N:\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2018/11/20 11:26:49.000.975,N:\Computing Programming Project\Project Code\LoginForm.dfm=N:\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>2018/11/20 11:26:49.000.975,N:\Computing Programming Project\Project Code\LoginForm.pas=N:\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2018/11/20 11:27:15.000.749,N:\Computing Programming Project\Project Code\OrthographicAssistanceProj.dproj=N:\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>2018/11/20 11:29:35.000.776,N:\Computing Programming Project\Project Code\Login.dfm=N:\Computing Programming Project\Project Code\LoginForm.dfm</Transaction>
+    <Transaction>2018/11/20 11:29:35.000.776,N:\Computing Programming Project\Project Code\Login.pas=N:\Computing Programming Project\Project Code\LoginForm.pas</Transaction>
+    <Transaction>2018/11/28 10:04:51.000.445,=N:\Computing Programming Project\Project Code\Unit1.pas</Transaction>
+    <Transaction>2018/11/28 10:05:03.000.627,N:\Computing Programming Project\Project Code\Unit1.pas=N:\Computing Programming Project\Project Code\Mainmenu.pas</Transaction>
+    <Transaction>2018/11/28 10:05:29.000.261,N:\Computing Programming Project\Project Code\Mainmenu.pas=</Transaction>
+    <Transaction>2018/11/28 10:05:45.000.467,=N:\Computing Programming Project\Project Code\Unit1.pas</Transaction>
+    <Transaction>2018/11/28 10:05:55.000.299,N:\Computing Programming Project\Project Code\Unit1.pas=N:\Computing Programming Project\Project Code\Mainmenu.pas</Transaction>
+    <Transaction>2018/11/28 10:05:55.000.299,N:\Computing Programming Project\Project Code\Unit1.dfm=N:\Computing Programming Project\Project Code\Mainmenu.dfm</Transaction>
+    <Transaction>2018/11/28 10:07:59.000.150,=N:\Computing Programming Project\Project Code\Unit1.pas</Transaction>
+    <Transaction>2018/11/28 10:08:21.000.776,N:\Computing Programming Project\Project Code\Unit1.pas=N:\Computing Programming Project\Project Code\Globalsetup.pas</Transaction>
+    <Transaction>2018/11/29 14:54:00.000.133,=N:\Computing Programming Project\Project Code\Unit1.pas</Transaction>
+    <Transaction>2018/11/29 14:54:11.000.661,N:\Computing Programming Project\Project Code\Error.dfm=N:\Computing Programming Project\Project Code\Unit1.dfm</Transaction>
+    <Transaction>2018/11/29 14:54:11.000.661,N:\Computing Programming Project\Project Code\Error.pas=N:\Computing Programming Project\Project Code\Unit1.pas</Transaction>
+    <Transaction>2018/12/11 15:53:55.000.089,=D:\Users\reptm\Downloads\Computing Programming Project\Project Code\Unit1.pas</Transaction>
+    <Transaction>2018/12/11 15:54:16.000.307,D:\Users\reptm\Downloads\Computing Programming Project\Project Code\Unit1.pas=D:\Users\reptm\Downloads\Computing Programming Project\Project Code\Adminmenu.pas</Transaction>
+    <Transaction>2018/12/11 15:54:16.000.307,D:\Users\reptm\Downloads\Computing Programming Project\Project Code\Unit1.dfm=D:\Users\reptm\Downloads\Computing Programming Project\Project Code\Adminmenu.dfm</Transaction>
+    <Transaction>2018/12/11 15:57:02.000.731,D:\Users\reptm\Downloads\Computing Programming Project\Project Code\Adminmenu.dfm=D:\Users\reptm\Downloads\Computing Programming Project\Project Code\AdminOptions.dfm</Transaction>
+    <Transaction>2018/12/11 15:57:02.000.731,D:\Users\reptm\Downloads\Computing Programming Project\Project Code\Adminmenu.pas=D:\Users\reptm\Downloads\Computing Programming Project\Project Code\AdminOptions.pas</Transaction>
+    <Transaction>2018/12/12 10:14:26.000.627,=N:\Computing Programming Project\Project Code\Unit1.pas</Transaction>
+    <Transaction>2018/12/12 10:14:37.000.163,N:\Computing Programming Project\Project Code\Settings.pas=N:\Computing Programming Project\Project Code\Unit1.pas</Transaction>
+    <Transaction>2018/12/12 10:14:37.000.163,N:\Computing Programming Project\Project Code\Settings.dfm=N:\Computing Programming Project\Project Code\Unit1.dfm</Transaction>
+    <Transaction>2018/12/12 10:37:38.000.058,=N:\Computing Programming Project\Project Code\Unit1.pas</Transaction>
+    <Transaction>2018/12/12 10:37:54.000.223,N:\Computing Programming Project\Project Code\AddUser.dfm=N:\Computing Programming Project\Project Code\Unit1.dfm</Transaction>
+    <Transaction>2018/12/12 10:37:54.000.223,N:\Computing Programming Project\Project Code\AddUser.pas=N:\Computing Programming Project\Project Code\Unit1.pas</Transaction>
+    <Transaction>2018/12/16 21:42:17.000.968,=D:\Users\reptm\Downloads\Computing Programming Project\Project Code\Unit1.pas</Transaction>
+    <Transaction>2018/12/16 21:48:10.000.647,=D:\Users\reptm\Downloads\Computing Programming Project\Project Code\Unit1.pas</Transaction>
+    <Transaction>2018/12/16 21:48:39.000.234,D:\Users\reptm\Downloads\Computing Programming Project\Project Code\ViewUsers.pas=D:\Users\reptm\Downloads\Computing Programming Project\Project Code\Unit1.pas</Transaction>
+    <Transaction>2018/12/16 21:48:39.000.234,D:\Users\reptm\Downloads\Computing Programming Project\Project Code\ViewUsers.dfm=D:\Users\reptm\Downloads\Computing Programming Project\Project Code\Unit1.dfm</Transaction>
+    <Transaction>2019/01/09 22:15:37.000.749,=D:\Users\reptm\Downloads\Computing Programming Project\Project Code\SpeechLib_TLB.pas</Transaction>
+    <Transaction>2019/01/09 22:22:43.000.247,=D:\Users\reptm\Downloads\Computing Programming Project\Project Code\Unit2.pas</Transaction>
+    <Transaction>2019/01/09 22:24:10.000.867,D:\Users\reptm\Downloads\Computing Programming Project\Project Code\Unit2.pas=D:\Users\reptm\Downloads\Computing Programming Project\Project Code\Level.pas</Transaction>
+    <Transaction>2019/01/09 22:24:10.000.867,D:\Users\reptm\Downloads\Computing Programming Project\Project Code\Unit2.dfm=D:\Users\reptm\Downloads\Computing Programming Project\Project Code\Level.dfm</Transaction>
+    <Transaction>2019/04/17 10:47:50.000.712,=D:\Users\reptm\Downloads\Computing Programming Project\Project Code\Unit1.pas</Transaction>
+    <Transaction>2019/04/17 10:48:03.000.665,D:\Users\reptm\Downloads\Computing Programming Project\Project Code\RemoveUser.dfm=D:\Users\reptm\Downloads\Computing Programming Project\Project Code\Unit1.dfm</Transaction>
+    <Transaction>2019/04/17 10:48:03.000.665,D:\Users\reptm\Downloads\Computing Programming Project\Project Code\RemoveUser.pas=D:\Users\reptm\Downloads\Computing Programming Project\Project Code\Unit1.pas</Transaction>
+    <Transaction>2019/04/17 10:48:35.000.436,D:\Users\reptm\Downloads\Computing Programming Project\Project Code\RemoveUser.pas=</Transaction>
+  </Transactions>
+</BorlandProject>

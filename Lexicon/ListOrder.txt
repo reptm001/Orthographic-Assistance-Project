@@ -1,0 +1,14 @@
+1.txt, 2.txt -> Reception
+3.txt, 4.txt -> Year 1
+5.txt, 6.txt -> Year 2
+7.txt, 8.txt -> Year 3
+9.txt, 10.txt -> Year 4
+11.txt, 12.txt -> Year 5
+
+Bellenden Primary School
+Based upon National Literacy Curriculum
+
+All lowercase
+No duplicates
+No spaces
+Word per line

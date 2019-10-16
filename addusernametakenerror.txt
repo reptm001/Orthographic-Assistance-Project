@@ -1,0 +1,3 @@
+Add User Error
+Username already taken in database. Seek administrator for further assistance.
+Additional help: 1. Make sure the username does not already exist in the database (not case-sensitive).

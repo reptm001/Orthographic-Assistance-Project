@@ -1,0 +1,2 @@
+Login Error
+Username or Password is blank. Enter both inputs. Seek administrator for further assistance.

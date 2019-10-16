@@ -1,0 +1,2 @@
+Notification: User Added
+User has been successfully added to the database.

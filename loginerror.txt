@@ -1,0 +1,3 @@
+Login Error
+Username or Password not in database. Seek administrator for further assistance.
+Additional help: 1. Make sure your user is setup on the database. 2. Make sure the username and password are correct, including capitals and numbers. 3. Make sure the correct database is linked to the program.

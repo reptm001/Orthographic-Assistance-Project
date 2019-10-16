@@ -1,0 +1,121 @@
+unit ViewUsers;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.StrUtils,
+  System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls,
+  Data.DB, Vcl.Grids, Vcl.DBGrids, Data.Win.ADODB, Vcl.StdCtrls, Vcl.Buttons;
+
+type
+  TfrmViewusers = class(TForm)
+    imgBack: TImage;
+    adotblUsers: TADOTable;
+    dbGrid: TDBGrid;
+    lblBack: TLabel;
+    lblViewUsers: TLabel;
+    pnlViewUsers: TPanel;
+    DataSource: TDataSource;
+    sbtnViewPassword: TSpeedButton;
+    btnRemoveUser: TButton;
+    adoqryDelete: TADOQuery;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
+    procedure imgBackClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure sbtnViewPasswordClick(Sender: TObject);
+    procedure btnRemoveUserClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmViewusers: TfrmViewusers;
+
+implementation
+
+{$R *.dfm}
+
+uses
+  AdminOptions, Globalsetup;
+
+procedure TfrmViewusers.btnRemoveUserClick(Sender: TObject);
+var
+  password: string;
+  buttonSelected: integer;
+  user: string;
+begin
+  // Only remove user if admin has correctly entered db password
+  InputQuery('Admin: Database Password', 'Enter the password for the database:',
+    password);
+  if password = globaldbpassword then
+  begin
+    // Set user variable to the username of the selected row on dbGrid
+    user := dbGrid.Fields[0].AsString;
+    // Present user with confirmation dialog
+    buttonSelected := messagedlg('Confirm that the user "' + user +
+      '" will be REMOVED from the database.', mtCustom, mbOKCancel, 0);
+    // Locate and delete user if user presses ok on confirmation dialog
+    if buttonSelected = mrOK then
+    begin
+      dbGrid.DataSource.DataSet.Locate('Username', user, []);
+      dbGrid.DataSource.DataSet.Delete;
+      showmessage('"' + user + '" has been removed from the database.');
+    end
+    else
+      showmessage('"' + user + '" has NOT been removed from the database.');
+  end
+  else
+    showmessage('Database Error: Incorrect database password.');
+end;
+
+procedure TfrmViewusers.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  frmAdminoptions.Show;
+end;
+
+procedure TfrmViewusers.FormCreate(Sender: TObject);
+begin
+  frmViewusers.Position := poscreencenter;
+end;
+
+procedure TfrmViewusers.FormShow(Sender: TObject);
+var
+  i: integer;
+  ColumnArray: array of integer;
+begin
+  adotblUsers.ConnectionString := globalconnectionstring;
+  adoqryDelete.ConnectionString := globalconnectionstring;
+  adotblUsers.TableName := 'tblUsers';
+  adotblUsers.Active := true;
+  // Only show neccessary columns in the database, e.g. hide user passwords
+  ColumnArray := [1, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+  for i := 0 to 9 do
+    dbGrid.Columns[i].Width := 80;
+  for i in ColumnArray do
+    dbGrid.Columns[i].Visible := false;
+end;
+
+procedure TfrmViewusers.imgBackClick(Sender: TObject);
+begin
+  frmAdminoptions.Show;
+  frmViewusers.Hide;
+end;
+
+procedure TfrmViewusers.sbtnViewPasswordClick(Sender: TObject);
+var
+  password: string;
+begin
+  // Only show user passwords once admin has correctly entered db password
+  InputQuery('Admin: Database Password', 'Enter the password for the database:',
+    password);
+  if password = globaldbpassword then
+    dbGrid.Columns[1].Visible := sbtnViewPassword.Down
+  else
+    showmessage('Database Error: Incorrect database password.');
+end;
+
+end.
