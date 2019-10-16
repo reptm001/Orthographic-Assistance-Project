@@ -1,0 +1,143 @@
+unit HeadsetSettings;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Imaging.pngimage,
+  Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.OleServer, SpeechLib_TLB;
+
+type
+  TfrmHeadsetsettings = class(TForm)
+    imgBack: TImage;
+    lblBack: TLabel;
+    lblViewUsers: TLabel;
+    SpVoice: TSpVoice;
+    tbVolume: TTrackBar;
+    lblTBVolPos: TLabel;
+    btnRestore: TButton;
+    cbVoices: TComboBox;
+    tbRate: TTrackBar;
+    lblTBRatePos: TLabel;
+    lblVolume: TLabel;
+    lblRate: TLabel;
+    lblVoices: TLabel;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
+    procedure imgBackClick(Sender: TObject);
+    procedure tbVolumeChange(Sender: TObject);
+    procedure tbRateChange(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure cbVoicesChange(Sender: TObject);
+    procedure btnRestoreClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmHeadsetsettings: TfrmHeadsetsettings;
+  SOToken: ISpeechObjectToken;
+  SOTokens: ISpeechObjectTokens;
+  LexiconDir: string;
+  CurrentDir: string;
+  sl: TStringList;
+
+implementation
+
+{$R *.dfm}
+
+uses
+  Settings;
+
+procedure TfrmHeadsetsettings.btnRestoreClick(Sender: TObject);
+begin
+  // Set trackbars and combobox to default values
+  // This will trigger onChange event for each, posting changes to config file
+  tbVolume.Position := 100;
+  tbRate.Position := 0;
+  cbVoices.ItemIndex := 0;
+  sl[2] := inttostr(cbVoices.ItemIndex);
+  sl.SaveToFile(LexiconDir + 'VoiceConfig.txt');
+end;
+
+procedure TfrmHeadsetsettings.cbVoicesChange(Sender: TObject);
+begin
+  // On change of voice, post cb index to config file. This index will be used
+  // For an identical combobox on the level form
+  sl[2] := inttostr(cbVoices.ItemIndex);
+  sl.SaveToFile(LexiconDir + 'VoiceConfig.txt');
+end;
+
+procedure TfrmHeadsetsettings.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  frmSettings.Show;
+end;
+
+procedure TfrmHeadsetsettings.FormCreate(Sender: TObject);
+var
+  i: integer;
+begin
+  frmHeadsetsettings.Position := poscreencenter;
+  // Gather speech object tokens for all available voices (SpeechAPI)
+  SOTokens := SpVoice.GetVoices('', '');
+  // Populate cbVoices with voices
+  for i := 0 to (SOTokens.Count - 1) do
+  begin
+    SOToken := SOTokens.Item(i);
+    cbVoices.Items.AddObject(SOToken.GetDescription(0), TObject(SOToken));
+    //Increment descriptor reference count to ensure it's not destroyed
+    SOToken._AddRef;
+  end;
+end;
+
+procedure TfrmHeadsetsettings.FormDestroy(Sender: TObject);
+var
+  i: integer;
+begin
+  sl.Free;
+  //Release all the voice descriptors
+  for i := 0 to (cbVoices.Items.Count - 1) do
+    ISpeechObjectToken(Pointer(cbVoices.Items.Objects[i]))._Release;
+end;
+
+procedure TfrmHeadsetsettings.FormShow(Sender: TObject);
+begin
+  CurrentDir := GetCurrentDir;
+  LexiconDir := StringReplace(CurrentDir, 'Win' + (inttostr(SizeOf(Pointer) * 8)
+    ) + '\Debug', 'Lexicon\', [rfIgnoreCase]);
+  // Create TStringList object, and populate the list with the values in the
+  // Config file: 1st line = volume .. etc...
+  sl := TStringList.Create;
+  sl.LoadFromFile(LexiconDir + 'VoiceConfig.txt');
+  tbVolume.Position := strtoint(sl[0]);
+  tbRate.Position := strtoint(sl[1]);
+  cbVoices.ItemIndex := strtoint(sl[2]);
+end;
+
+procedure TfrmHeadsetsettings.imgBackClick(Sender: TObject);
+begin
+  frmSettings.Show;
+  frmHeadsetsettings.Hide;
+end;
+
+procedure TfrmHeadsetsettings.tbRateChange(Sender: TObject);
+begin
+  // On change of rate, post new rate to config file
+  lblTBRatePos.Caption := (formatfloat('00', tbRate.Position));
+  sl[1] := inttostr(tbRate.Position);
+  sl.SaveToFile(LexiconDir + 'VoiceConfig.txt');
+end;
+
+procedure TfrmHeadsetsettings.tbVolumeChange(Sender: TObject);
+begin
+  lblTBVolPos.Caption := (formatfloat('000', tbVolume.Position));
+  sl[0] := inttostr(tbVolume.Position);
+  sl.SaveToFile(LexiconDir + 'VoiceConfig.txt');
+end;
+
+end.

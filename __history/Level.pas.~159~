@@ -1,0 +1,245 @@
+unit Level;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls,
+  Vcl.StdCtrls, Vcl.OleServer, SpeechLib_TLB, Data.DB, Data.Win.ADODB;
+
+type
+  TfrmLevel = class(TForm)
+    lblHome: TLabel;
+    imgHome: TImage;
+    pnlLevel: TPanel;
+    lblEnter: TLabel;
+    edtGuess: TEdit;
+    btnSubmit: TButton;
+    btnSkip: TButton;
+    imgAudio: TImage;
+    btnRepeat: TButton;
+    SpVoice: TSpVoice;
+    imgResult: TImage;
+    lblResult: TLabel;
+    adotblUsers: TADOTable;
+    lblProg1: TLabel;
+    lblProg2: TLabel;
+    lblProg3: TLabel;
+    lblAnswer: TLabel;
+    cbVoices: TComboBox;
+    procedure imgHomeClick(Sender: TObject);
+    procedure btnSubmitClick(Sender: TObject);
+    procedure btnRepeatClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure btnSkipClick(Sender: TObject);
+    procedure edtGuessKeyPress(Sender: TObject; var Key: Char);
+    procedure UpdateProgress(x: integer; a:boolean);
+    procedure FormDestroy(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmLevel: TfrmLevel;
+  word: string;
+  guess: string;
+  CurrentDir: string;
+  LexiconDir: string;
+  Lexicon: textfile;
+  IconDir: string;
+  count, guesses: integer;
+  SOToken: ISpeechObjectToken;
+  SOTokens: ISpeechObjectTokens;
+  sl: TStringList;
+
+implementation
+
+{$R *.dfm}
+
+uses
+  Mainmenu, Globalsetup;
+
+procedure TfrmLevel.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  // Close ADO object and Lexicon file properly before closing
+  adotblUsers.Close;
+  closefile(Lexicon);
+  SpVoice.Volume := 0;
+  frmMainmenu.Show;
+end;
+
+procedure TfrmLevel.FormCreate(Sender: TObject);
+var
+  i: integer;
+begin
+  frmLevel.Position := poscreencenter;
+  SOTokens := SpVoice.GetVoices('', '');
+  for i := 0 to (SOTokens.Count - 1) do
+  begin
+    SOToken := SOTokens.Item(i);
+    cbVoices.Items.AddObject(SOToken.GetDescription(0), TObject(SOToken));
+    SOToken._AddRef;
+  end;
+  if cbVoices.Items.Count > 0 then cbVoices.ItemIndex := 0;
+end;
+
+procedure TfrmLevel.FormDestroy(Sender: TObject);
+var
+  i: integer;
+begin
+  sl.Free;
+  for i := 0 to (cbVoices.Items.Count - 1) do
+    ISpeechObjectToken(Pointer(cbVoices.Items.Objects[I]))._Release;
+end;
+
+procedure TfrmLevel.FormShow(Sender: TObject);
+var
+  i: integer;
+begin
+  // Using ADO object, locate the user's data and load previous level progress to count
+  with adotblUsers do
+  begin
+    Active := false;
+    ConnectionString := globalconnectionstring;
+    TableName := 'tblUsers';
+    Active := true;
+    Open;
+    Locate('Username', globalusername, []);
+    count := FieldByName('Level' + inttostr(globalgamelevel)).AsInteger;
+  end;
+  // Reset GUI labels
+  guesses := 0;
+  lblResult.Caption := '';
+  imgResult.Visible := false;
+  lblProg1.Caption := formatfloat('000', count);
+  lblProg3.Caption := inttostr(LexiconSize[globalgamelevel]);
+  CurrentDir := GetCurrentDir;
+  // Set icon and lexicon directory (contained within program folder) from main program directory
+  // (SizeOf(Pointer)*8) returns the windows platform at runtime (x86/x64)
+  IconDir := StringReplace(CurrentDir, 'Win' + (inttostr(SizeOf(Pointer) * 8)) +
+    '\Debug', 'Icons\', [rfIgnoreCase]);
+  LexiconDir := StringReplace(CurrentDir, 'Win' + (inttostr(SizeOf(Pointer) * 8)
+    ) + '\Debug', 'Lexicon\', [rfIgnoreCase]);
+  // Assign the current game level file from the lexicon directory to the variable Lexicon
+  assignfile(Lexicon, LexiconDir + inttostr(globalgamelevel) + '.txt');
+  reset(Lexicon);
+  // Set the current word by moving through the words before it in the lexicon
+  // This will depend on current level progress through 'count'
+  for i := 0 to count do
+    readln(Lexicon, word);
+  SpVoice.Volume := 100;
+  // Using the SpVoice component of the SpeechAPI package, output the word to be tested
+  // Use asynchronous flag to return the command as soon as the speak request is queued
+  SpVoice.Speak(word, 1);
+end;
+
+// UpdateProgress procedure updates the user's data for current level progress
+// 'a' parameter is false for skipped answers, to correctly reflect user's score
+procedure TfrmLevel.UpdateProgress(x: integer; a:boolean);
+var
+  score: integer;
+begin
+  adotblUsers.Edit;
+  // Set the value of the current level progress to x
+  adotblUsers.FieldByName('Level' + inttostr(globalgamelevel)).AsInteger := x;
+  score := adotblUsers.FieldByName('Score').AsInteger;
+  // Only increment user's score if answer hasn't been skipped
+  if a then adotblUsers.FieldByName('Score').AsInteger := (score+1);
+  adotblUsers.Post;
+  adotblUsers.Refresh;
+  // Display current level progress to the user
+  lblProg1.Caption := formatfloat('000', x);
+end;
+
+procedure TfrmLevel.btnSubmitClick(Sender: TObject);
+begin
+  guess := edtGuess.Text;
+  edtGuess.Text := '';
+  lblAnswer.Visible := false;
+  imgResult.Visible := true;
+  // If the guess matches the word then update progress and move onto next word
+  if UpperCase(guess) = UpperCase(word) then
+  begin
+    // Display image informing the user that their guess is correct
+    imgResult.Picture.LoadFromFile(IconDir + 'icons8_Happy_64px.png');
+    lblResult.Caption := 'Correct';
+    inc(count);
+    UpdateProgress(count, true);
+    // If 'count' is equal to the size of the current lexicon then the level is complete
+    if count = LexiconSize[globalgamelevel] then
+    begin
+      showmessage('Level Completed.');
+      frmLevel.Close;
+    end
+    else
+    // Else speak the next word
+    begin
+      guesses := 0;
+      readln(Lexicon, word);
+      SpVoice.Speak(word, 1);
+      edtGuess.SetFocus;
+    end;
+  end
+  else
+  // Else display image informing the user that their guess is incorrect
+  begin
+    imgResult.Picture.LoadFromFile(IconDir + 'icons8_Sad_64px.png');
+    lblResult.Caption := 'Incorrect';
+    // Increment guesses for each incorrect guess
+    inc(guesses);
+    // If the user makes 3 failed attempts then display correct answer
+    if guesses = 3 then
+    begin
+      lblAnswer.Visible := true;
+      edtGuess.Text := word;
+      imgResult.Visible := false;
+      lblResult.Caption := '';
+    end;
+    SpVoice.Speak(word, 1);
+    edtGuess.SetFocus;
+  end;
+end;
+
+procedure TfrmLevel.btnSkipClick(Sender: TObject);
+begin
+  // Increment count and update user's data, skipping the current word
+  inc(count);
+  UpdateProgress(count, false);
+  // Speak next word
+  readln(Lexicon, word);
+  SpVoice.Speak(word, 1);
+  lblResult.Caption := '';
+  imgResult.Visible := false;
+  edtGuess.SetFocus;
+end;
+
+procedure TfrmLevel.btnRepeatClick(Sender: TObject);
+begin
+  SpVoice.Speak(word, 1);
+  edtGuess.SetFocus;
+end;
+
+procedure TfrmLevel.edtGuessKeyPress(Sender: TObject; var Key: Char);
+begin
+  lblResult.Caption := '';
+  imgResult.Visible := false;
+  if ord(Key) = VK_RETURN then
+  begin
+    Key := #0; // prevent beeping
+    btnSubmitClick(Sender);
+  end;
+end;
+
+procedure TfrmLevel.imgHomeClick(Sender: TObject);
+begin
+  frmMainmenu.Show;
+  // Do not hide, close to properly disconnect objects
+  frmLevel.Close;
+end;
+
+end.
