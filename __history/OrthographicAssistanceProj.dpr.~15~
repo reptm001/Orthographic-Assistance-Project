@@ -1,0 +1,32 @@
+program OrthographicAssistanceProj;
+
+uses
+  Vcl.Forms,
+  Login in 'Login.pas' {frmLogin},
+  Mainmenu in 'Mainmenu.pas' {frmMainmenu},
+  Globalsetup in 'Globalsetup.pas',
+  Error in 'Error.pas' {frmError},
+  AdminOptions in 'AdminOptions.pas' {frmAdminoptions},
+  Settings in 'Settings.pas' {frmSettings},
+  AddUser in 'AddUser.pas' {frmAdduser},
+  ViewUsers in 'ViewUsers.pas' {frmViewusers},
+  SpeechLib_TLB in 'SpeechLib_TLB.pas',
+  Level in 'Level.pas' {frmLevel},
+  HeadsetSettings in 'HeadsetSettings.pas' {frmHeadsetsettings};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TfrmLogin, frmLogin);
+  Application.CreateForm(TfrmMainmenu, frmMainmenu);
+  Application.CreateForm(TfrmError, frmError);
+  Application.CreateForm(TfrmAdminoptions, frmAdminoptions);
+  Application.CreateForm(TfrmSettings, frmSettings);
+  Application.CreateForm(TfrmAdduser, frmAdduser);
+  Application.CreateForm(TfrmViewusers, frmViewusers);
+  Application.CreateForm(TfrmLevel, frmLevel);
+  Application.CreateForm(TfrmHeadsetsettings, frmHeadsetsettings);
+  Application.Run;
+end.

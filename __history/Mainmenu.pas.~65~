@@ -1,0 +1,273 @@
+unit Mainmenu;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls,
+  Vcl.StdCtrls, Data.DB, Data.Win.ADODB, Vcl.ComCtrls;
+
+type
+  TfrmMainmenu = class(TForm)
+    imgAdminOptions: TImage;
+    imgSettings: TImage;
+    imgLogout: TImage;
+    lblMainMenu: TLabel;
+    lblLogout: TLabel;
+    lblAdminOptions: TLabel;
+    lblSettings: TLabel;
+    shpProfilePic: TShape;
+    imgProfilePic: TImage;
+    lblUsername: TLabel;
+    adotblUsers: TADOTable;
+    adoqryUsers: TADOQuery;
+    lblScore: TLabel;
+    lblDailyStreak: TLabel;
+    lblLastLogin: TLabel;
+    timerClock: TTimer;
+    lblTime: TLabel;
+    lblDate: TLabel;
+    pnlMain: TPanel;
+    imgLvl1: TImage;
+    imgLvl2: TImage;
+    imgLvl3: TImage;
+    imgLvl9: TImage;
+    imgLvl10: TImage;
+    imgLvl11: TImage;
+    imgLvl4: TImage;
+    imgLvl12: TImage;
+    imgLvl5: TImage;
+    imgLvl6: TImage;
+    imgLvl7: TImage;
+    imgLvl8: TImage;
+    pb1: TProgressBar;
+    pb2: TProgressBar;
+    pb3: TProgressBar;
+    pb4: TProgressBar;
+    pb5: TProgressBar;
+    pb6: TProgressBar;
+    pb7: TProgressBar;
+    pb8: TProgressBar;
+    pb9: TProgressBar;
+    pb10: TProgressBar;
+    pb11: TProgressBar;
+    pb12: TProgressBar;
+    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure imgAdminOptionsClick(Sender: TObject);
+    procedure imgLogoutClick(Sender: TObject);
+    procedure imgSettingsClick(Sender: TObject);
+    procedure timerClockTimer(Sender: TObject);
+    procedure imgLvl1Click(Sender: TObject);
+    procedure imgLvl2Click(Sender: TObject);
+    procedure imgLvl3Click(Sender: TObject);
+    procedure imgLvl4Click(Sender: TObject);
+    procedure imgLvl5Click(Sender: TObject);
+    procedure imgLvl6Click(Sender: TObject);
+    procedure imgLvl7Click(Sender: TObject);
+    procedure imgLvl8Click(Sender: TObject);
+    procedure imgLvl9Click(Sender: TObject);
+    procedure imgLvl10Click(Sender: TObject);
+    procedure imgLvl11Click(Sender: TObject);
+    procedure imgLvl12Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmMainmenu: TfrmMainmenu;
+  CurrentDir: string;
+  ImageDir: string;
+
+implementation
+
+{$R *.dfm}
+
+uses
+  Login, Globalsetup, AdminOptions, Settings, Error, Level;
+
+procedure TfrmMainmenu.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  frmLogin.Show;
+end;
+
+procedure TfrmMainmenu.FormCreate(Sender: TObject);
+begin
+  frmMainmenu.Scaled := true;
+  frmMainmenu.Position := poscreencenter;
+  // WindowState := wsMaximized;
+  adotblUsers.Active := false;
+  adotblUsers.ConnectionString := globalconnectionstring;
+  adotblUsers.TableName := 'tblUsers';
+  adotblUsers.Active := true;
+end;
+
+procedure TfrmMainmenu.FormShow(Sender: TObject);
+var
+  Data: array [1 .. 12] of integer;
+  i: integer;
+begin
+  case globalpasslevel of
+    0:
+      begin
+        frmMainmenu.Caption := 'Regular User Menu';
+        imgAdminOptions.Visible := false;
+        lblAdminOptions.Visible := false;
+      end;
+    1:
+      begin
+        frmMainmenu.Caption := 'Administrator Menu';
+        imgAdminOptions.Visible := true;
+        lblAdminOptions.Visible := true;
+      end;
+  end;
+  with adoqryUsers do
+  begin
+    Active := false;
+    ConnectionString := globalconnectionstring;
+    SQL.Clear;
+    SQL.Add('Select * from tblUsers where Username = "' +
+      globalusername + '";');
+    Active := true;
+    First;
+    CurrentDir := GetCurrentDir;
+    ImageDir := StringReplace(CurrentDir, 'Win' + (inttostr(SizeOf(Pointer) * 8)
+      ) + '\Debug', 'Profile Pictures\', [rfIgnoreCase]);
+    imgProfilePic.Picture.LoadFromFile
+      (ImageDir + adoqryUsers['ProfilePicture']);
+    lblScore.Caption := 'Score: ' + floattostr(adoqryUsers['Score']);
+    lblDailyStreak.Caption := 'Daily Streak: ' +
+      floattostr(adoqryUsers['DailyStreak']);
+    lblLastLogin.Caption := 'Last Login: ' +
+      datetostr(adoqryUsers['LastLogin']);
+    for i := 1 to 12 do Data[i]:=adoqryUsers['Level'+i];
+    setglobaluserprogress(Data);
+  end;
+  lblUsername.Caption := globalusername;
+  pb1.Position:=globaluserprogress[1];
+  pb2.Position:=globaluserprogress[2];
+  pb3.Position:=globaluserprogress[3];
+  pb4.Position:=globaluserprogress[4];
+  pb5.Position:=globaluserprogress[5];
+  pb6.Position:=globaluserprogress[6];
+  pb7.Position:=globaluserprogress[7];
+  pb8.Position:=globaluserprogress[8];
+  pb9.Position:=globaluserprogress[9];
+  pb10.Position:=globaluserprogress[10];
+  pb11.Position:=globaluserprogress[11];
+  pb12.Position:=globaluserprogress[12];
+end;
+
+procedure TfrmMainmenu.imgAdminOptionsClick(Sender: TObject);
+begin
+  frmAdminoptions.Show;
+  frmMainmenu.Hide;
+end;
+
+procedure TfrmMainmenu.imgLogoutClick(Sender: TObject);
+begin
+  frmLogin.Show;
+  frmMainmenu.Hide;
+end;
+
+procedure TfrmMainmenu.imgLvl10Click(Sender: TObject);
+begin
+  setglobalgamelevel(10);
+  frmLevel.Show;
+  frmMainmenu.Hide;
+end;
+
+procedure TfrmMainmenu.imgLvl11Click(Sender: TObject);
+begin
+  setglobalgamelevel(11);
+  frmLevel.Show;
+  frmMainmenu.Hide;
+end;
+
+procedure TfrmMainmenu.imgLvl12Click(Sender: TObject);
+begin
+  setglobalgamelevel(12);
+  frmLevel.Show;
+  frmMainmenu.Hide;
+end;
+
+procedure TfrmMainmenu.imgLvl1Click(Sender: TObject);
+begin
+  setglobalgamelevel(1);
+  frmLevel.Show;
+  frmMainmenu.Hide;
+end;
+
+procedure TfrmMainmenu.imgLvl2Click(Sender: TObject);
+begin
+  setglobalgamelevel(2);
+  frmLevel.Show;
+  frmMainmenu.Hide;
+end;
+
+procedure TfrmMainmenu.imgLvl3Click(Sender: TObject);
+begin
+  setglobalgamelevel(3);
+  frmLevel.Show;
+  frmMainmenu.Hide;
+end;
+
+procedure TfrmMainmenu.imgLvl4Click(Sender: TObject);
+begin
+  setglobalgamelevel(4);
+  frmLevel.Show;
+  frmMainmenu.Hide;
+end;
+
+procedure TfrmMainmenu.imgLvl5Click(Sender: TObject);
+begin
+  setglobalgamelevel(5);
+  frmLevel.Show;
+  frmMainmenu.Hide;
+end;
+
+procedure TfrmMainmenu.imgLvl6Click(Sender: TObject);
+begin
+  setglobalgamelevel(6);
+  frmLevel.Show;
+  frmMainmenu.Hide;
+end;
+
+procedure TfrmMainmenu.imgLvl7Click(Sender: TObject);
+begin
+  setglobalgamelevel(7);
+  frmLevel.Show;
+  frmMainmenu.Hide;
+end;
+
+procedure TfrmMainmenu.imgLvl8Click(Sender: TObject);
+begin
+  setglobalgamelevel(8);
+  frmLevel.Show;
+  frmMainmenu.Hide;
+end;
+
+procedure TfrmMainmenu.imgLvl9Click(Sender: TObject);
+begin
+  setglobalgamelevel(9);
+  frmLevel.Show;
+  frmMainmenu.Hide;
+end;
+
+procedure TfrmMainmenu.imgSettingsClick(Sender: TObject);
+begin
+  frmSettings.Show;
+  frmMainmenu.Hide;
+end;
+
+procedure TfrmMainmenu.timerClockTimer(Sender: TObject);
+begin
+  lblTime.Caption := timetostr(Time);
+  lblDate.Caption := datetostr(Date);
+end;
+
+end.

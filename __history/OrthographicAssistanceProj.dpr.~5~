@@ -1,0 +1,21 @@
+program OrthographicAssistanceProj;
+
+uses
+  Vcl.Forms,
+  Login in 'Login.pas' {frmLogin},
+  Mainmenu in 'Mainmenu.pas' {frmMainmenu},
+  Globalsetup in 'Globalsetup.pas',
+  Error in 'Error.pas' {errorForm},
+  AdminOptions in 'AdminOptions.pas' {frmAdminoptions};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TfrmLogin, frmLogin);
+  Application.CreateForm(TfrmMainmenu, frmMainmenu);
+  Application.CreateForm(TerrorForm, errorForm);
+  Application.CreateForm(TfrmAdminoptions, frmAdminoptions);
+  Application.Run;
+end.
