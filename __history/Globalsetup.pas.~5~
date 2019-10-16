@@ -1,0 +1,38 @@
+unit Globalsetup;
+
+interface
+uses
+sysutils;
+
+var
+globalconnectionstring:string;
+globalpasslevel:integer;
+globalerrorcode:array[0..2] of string;
+
+procedure setconnectionstring(x:string);
+procedure setglobalpasslevel(a:integer);
+procedure setglobalerrorcode(filename:string);
+
+implementation
+uses
+Login;
+
+procedure setconnectionstring(x:string);
+begin
+  globalconnectionstring:=x;
+end;
+
+procedure setglobalpasslevel(a:integer);
+begin
+  globalpasslevel:=a;
+end;
+
+procedure setglobalerrorcode(filename:string);
+begin
+
+  globalerrorcode[0]:=;
+  globalerrorcode[1]:=;
+  globalerrorcode[2]:=;
+end;
+
+end.

@@ -1,0 +1,72 @@
+unit Globalsetup;
+
+interface
+
+uses
+  sysutils;
+
+var
+  globalconnectionstring: string;
+  globalpasslevel: integer;
+  globalerrorcode: array [0 .. 2] of string;
+  globalusername: string;
+  globaldbpassword: string;
+  globalgamelevel: integer;
+
+const
+  LexiconSize: array [1..12] of integer = (333,333,304,304,257,257,304,304,252,252,228,228);
+
+procedure setconnectionstring(x: string);
+procedure setglobalpasslevel(a: integer);
+procedure setglobalerrorcode(filename: string);
+procedure setglobalusername(x: string);
+procedure setglobaldbpassword(x: string);
+procedure setglobalgamelevel(a: integer);
+
+implementation
+
+uses
+  Login;
+
+procedure setconnectionstring(x: string);
+begin
+  globalconnectionstring := x;
+end;
+
+procedure setglobalpasslevel(a: integer);
+begin
+  globalpasslevel := a;
+end;
+
+procedure setglobalerrorcode(filename: string);
+var
+  ErrorCode: textfile;
+  text: string;
+  i: integer;
+begin
+  assignfile(ErrorCode, filename);
+  reset(ErrorCode);
+  for i := 0 to 2 do
+  begin
+    readln(ErrorCode, text);
+    globalerrorcode[i] := text;
+  end;
+  closefile(ErrorCode);
+end;
+
+procedure setglobalusername(x: string);
+begin
+  globalusername := x;
+end;
+
+procedure setglobaldbpassword(x: string);
+begin
+  globaldbpassword := x;
+end;
+
+procedure setglobalgamelevel(a: integer);
+begin
+  globalgamelevel := a;
+end;
+
+end.

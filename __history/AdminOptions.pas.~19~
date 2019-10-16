@@ -1,0 +1,61 @@
+unit AdminOptions;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls,
+  Vcl.StdCtrls;
+
+type
+  TfrmAdminoptions = class(TForm)
+    imgHome: TImage;
+    imgAddUser: TImage;
+    pnlAddUser: TPanel;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Image1: TImage;
+    Image2: TImage;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure imgHomeClick(Sender: TObject);
+    procedure pnlAddUserClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmAdminoptions: TfrmAdminoptions;
+
+implementation
+
+{$R *.dfm}
+
+uses
+  Mainmenu, AddUser;
+
+procedure TfrmAdminoptions.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  frmMainmenu.Show;
+end;
+
+procedure TfrmAdminoptions.FormCreate(Sender: TObject);
+begin
+  frmAdminoptions.Position := poscreencenter;
+end;
+
+procedure TfrmAdminoptions.imgHomeClick(Sender: TObject);
+begin
+  frmMainmenu.Show;
+  frmAdminoptions.Hide;
+end;
+
+procedure TfrmAdminoptions.pnlAddUserClick(Sender: TObject);
+begin
+  frmAdduser.Show;
+  frmAdminoptions.Hide;
+end;
+
+end.

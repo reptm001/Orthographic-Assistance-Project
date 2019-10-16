@@ -1,0 +1,56 @@
+unit Error;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls;
+
+type
+  TerrorForm = class(TForm)
+    whiteboxShape: TShape;
+    okButton: TButton;
+    errorLabel: TLabel;
+    helpButton: TButton;
+    procedure FormShow(Sender: TObject);
+    procedure helpButtonClick(Sender: TObject);
+    procedure okButtonClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  errorForm: TerrorForm;
+
+implementation
+
+{$R *.dfm}
+uses
+GlobalSetup;
+
+procedure TerrorForm.FormCreate(Sender: TObject);
+begin
+errorForm.Position:=poscreencenter;
+end;
+
+procedure TerrorForm.FormShow(Sender: TObject);
+begin
+errorForm.Caption:=globalerrorcode[0];
+errorLabel.Caption:=globalerrorcode[1];
+errorLabel.Constraints;
+end;
+
+procedure TerrorForm.helpButtonClick(Sender: TObject);
+begin
+showmessage(globalerrorcode[2]);
+end;
+
+procedure TerrorForm.okButtonClick(Sender: TObject);
+begin
+errorForm.Hide;
+end;
+
+end.

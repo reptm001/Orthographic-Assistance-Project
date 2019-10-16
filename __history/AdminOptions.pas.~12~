@@ -1,0 +1,63 @@
+unit AdminOptions;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls,
+  Vcl.StdCtrls;
+
+type
+  TfrmAdminoptions = class(TForm)
+    imgHome: TImage;
+    imgAddUser: TImage;
+    Panel1: TPanel;
+    lnklblUser: TLinkLabel;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure imgHomeClick(Sender: TObject);
+    procedure Panel1Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure lnklblUserClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmAdminoptions: TfrmAdminoptions;
+
+implementation
+
+{$R *.dfm}
+
+uses
+  Mainmenu;
+
+procedure TfrmAdminoptions.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  frmMainmenu.Show;
+end;
+
+procedure TfrmAdminoptions.FormCreate(Sender: TObject);
+begin
+  frmAdminoptions.Position := poscreencenter;
+end;
+
+procedure TfrmAdminoptions.imgHomeClick(Sender: TObject);
+begin
+  frmMainmenu.Show;
+  frmAdminoptions.Hide;
+end;
+
+procedure TfrmAdminoptions.lnklblUserClick(Sender: TObject);
+begin
+  TfrmAdminoptions.Panel1Click(Sender);
+end;
+
+procedure TfrmAdminoptions.Panel1Click(Sender: TObject);
+begin
+  showmessage('hey');
+end;
+
+end.

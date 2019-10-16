@@ -1,0 +1,41 @@
+unit AdminOptions;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls;
+
+type
+  TfrmAdminoptions = class(TForm)
+    imgHome: TImage;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure imgHomeClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmAdminoptions: TfrmAdminoptions;
+
+implementation
+
+{$R *.dfm}
+
+uses
+  Mainmenu;
+
+procedure TfrmAdminoptions.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  frmMainmenu.Show;
+end;
+
+procedure TfrmAdminoptions.imgHomeClick(Sender: TObject);
+begin
+  frmMainmenu.Show;
+  frmAdminoptions.Hide;
+end;
+
+end.
